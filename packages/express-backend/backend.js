@@ -42,14 +42,22 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-const findUserByName = (name) => {
-  return users["users_list"].filter((user) => user["name"] === name);
+const findUser = (name, job) => {
+   return users["users_list"].filter((user)=>{
+    const nameMatches = user["name"] === name;
+    const jobMatches = user["job"] === job;
+
+    return nameMatches && jobMatches;
+  });
 };
+
+
 
 app.get("/users", (req, res) => {
   const name = req.query.name;
-  if (name != undefined) {
-    let result = findUserByName(name);
+  const job = req.query.job;
+  if (name != undefined || job != undefined) {
+    let result = findUser(name,job);
     result = { users_list: result };
     res.send(result);
   } else {
