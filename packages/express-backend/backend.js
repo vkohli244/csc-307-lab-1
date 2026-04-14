@@ -81,6 +81,23 @@ app.post("/users", (req, res) => {
   res.send();
 });
 
+const deleteUser = (id) => {
+  const removedUser = users["users_list"].filter((user) => user.id !== id);
+  users["users_list"] = removedUser; 
+};
+
+app.delete("/users/:id", (req, res) => {
+  const id = req.params.id; 
+    const userExists = users["users_list"].find((user) => user.id === id); // check if the user exists, so we don't try to delete a user that doesn't exist
+
+  if (userExists) {
+    deleteUser(id);
+    res.status(204).send(); 
+  } else {
+    res.status(404).send("User not found.");
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
