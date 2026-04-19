@@ -1,6 +1,5 @@
 // src/MyApp.jsx
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "./Table";
 import Form from "./Form";
 
@@ -9,6 +8,28 @@ import Form from "./Form";
 function MyApp() {
   const [characters, setCharacters] = useState([]);
 
+  
+  async function fetchUsers() {
+    try{
+      const response = await fetch("http://localhost:8000/users");
+      const json = await response.json();
+      return json.users_list;
+    }
+    catch(error){
+      console.log(error);
+      return false;
+    }
+  }
+  
+  useEffect(()=>{
+    fetchUsers().then(result=>{
+      if (result){
+        setCharacters(result);
+      }
+    });
+  },[]);
+
+  
   function removeOneCharacter(index) {
     const updated = characters.filter((character, i) => { // again this is a new array "updated" we're not changing the array of characters defined as const above
       return i !== index; // if i == index that means this is the index of the row we want to delete
