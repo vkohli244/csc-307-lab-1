@@ -5,7 +5,12 @@ import Form from "./Form";
 
 // src/MyApp.jsx
 
-function postUser(person) {
+
+
+function MyApp() {
+  const [characters, setCharacters] = useState([]);
+
+  function postUser(person) {
   const promise = fetch("Http://localhost:8000/users", {
     method: "POST",
     headers: {
@@ -16,10 +21,6 @@ function postUser(person) {
 
   return promise;
 }
-
-function MyApp() {
-  const [characters, setCharacters] = useState([]);
-
   async function fetchUsers() {
     try {
       const response = await fetch("http://localhost:8000/users");
@@ -48,7 +49,14 @@ function MyApp() {
 
   function updateList(person) {
     postUser(person)
-      .then(() => setCharacters([...characters, person]))
+      .then((response)=>{
+        if (response.status===201){
+          return response.json();
+        } else{
+          throw new Error("Failed to create user. Status " + response.status);
+        }
+      })
+      .then((newUser) => setCharacters([...characters, newUser]))
       .catch((error) => {
         console.log(error);
       });

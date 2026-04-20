@@ -84,12 +84,20 @@ const addUser = (user) => {
   users["users_list"].push(user);
   return user;
 };
+const generateId = () => {
+  return String(Math.random());
+};
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
+  
+  userToAdd.id = generateId();
+  
   addUser(userToAdd);
-  res.send();
+  res.status(201).send(userToAdd);
 });
+
+
 
 const deleteUser = (id) => {
   const removedUser = users["users_list"].filter((user) => user.id !== id);
