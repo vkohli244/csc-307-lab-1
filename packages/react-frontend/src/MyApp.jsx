@@ -4,9 +4,6 @@ import Table from "./Table";
 import Form from "./Form";
 
 // src/MyApp.jsx
-
-
-
 function MyApp() {
   const [characters, setCharacters] = useState([]);
 
@@ -39,14 +36,26 @@ function MyApp() {
       }
     });
   }, []);
-
-  function removeOneCharacter(index) {
-    const updated = characters.filter((character, i) => {
-      return i !== index; // if i == index that means this is the index of the row we want to delete
+  
+  function removeOneCharacter(id) {
+  console.log("Attempting to delete ID:", id); // <--- Add this!
+  fetch(`http://localhost:8000/users/${id}`, {
+    method: "DELETE"
+  })
+    .then((response) => {
+      if (response.status === 204) {
+        const updated = characters.filter((character) => {
+          return character.id !== id;
+        });
+        setCharacters(updated);
+      } else if (response.status === 404) {
+        console.log("Nothing deleted on backend.");
+      }
+    })
+    .catch((error) => {
+      console.log("Error: ", error);
     });
-    setCharacters(updated);
-  }
-
+}
   function updateList(person) {
     postUser(person)
       .then((response)=>{
